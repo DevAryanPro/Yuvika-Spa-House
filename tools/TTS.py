@@ -6,8 +6,8 @@ import os
 
 app = FastAPI()
 
-CREDIT = "Made by: @kaiiddo"
-BUG_REPORT = "Report bugs: @Group"
+CREDIT = "Made by: @kaiiddo and @codiifycodets"
+BUG_REPORT = "Report bugs: @DiscussionxGroup"
 FILENAME = "Love By Kaiiddo.mp3"
 
 @app.get("/")
