@@ -1,5 +1,6 @@
-### Windows: Try installing using pipwin:
+# If pyaudio fails on Windows, try:
 # pip install pipwin
 # pipwin install pyaudio
 
-pip install SpeechRecognition pyaudio
+SpeechRecognition
+pyaudio
