@@ -6,7 +6,7 @@ import os
 
 app = FastAPI()
 
-CREDIT = "Made by: @kaiiddo and @codiifycodets"
+CREDIT = "Made by: @kaiiddo and @codiifycoders"
 BUG_REPORT = "Report bugs: @DiscussionxGroup"
 FILENAME = "Love By Kaiiddo.mp3"
 
