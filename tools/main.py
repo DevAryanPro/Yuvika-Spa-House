@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from tts import router as tts_router
-from stt import router as stt_router
+from tools.tts import router as tts_router
+from tools.stt import router as stt_router
 
 app = FastAPI()
 
