@@ -1,6 +1,4 @@
-# If pyaudio fails on Windows, try:
-# pip install pipwin
-# pipwin install pyaudio
-
-SpeechRecognition
-pyaudio
+fastapi
+uvicorn[standard]
+speechrecognition
+edge-tts
