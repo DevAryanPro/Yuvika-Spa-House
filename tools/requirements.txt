@@ -1,4 +1,5 @@
 fastapi
 uvicorn[standard]
 speechrecognition
+python-multipart
 edge-tts
