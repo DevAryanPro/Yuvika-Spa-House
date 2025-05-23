@@ -1,0 +1,5 @@
+### Windows: Try installing using pipwin:
+# pip install pipwin
+# pipwin install pyaudio
+
+pip install SpeechRecognition pyaudio
