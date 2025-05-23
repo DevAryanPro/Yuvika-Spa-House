@@ -1,15 +1,15 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException
 import speech_recognition as sr
 import shutil
+import os
 
-app = FastAPI()
+router = APIRouter()
 
-@app.post("/speech-to-text/")
+@router.post("/speech-to-text/")
 async def speech_to_text(file: UploadFile = File(...)):
     if not file.filename.endswith((".wav", ".flac", ".aiff", ".aif", ".mp3")):
         raise HTTPException(status_code=400, detail="Invalid file type")
 
-    # Save uploaded file locally
     file_location = f"temp_audio_{file.filename}"
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -28,7 +28,6 @@ async def speech_to_text(file: UploadFile = File(...)):
     except Exception as e:
         return {"error": str(e)}
     finally:
-        import os
         if os.path.exists(file_location):
             os.remove(file_location)
             
