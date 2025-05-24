@@ -1,0 +1,14 @@
+{
+  "name": "yuvika-spa-house",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cd vite-project && npm run dev",
+    "build": "cd vite-project && npm run build",
+    "preview": "cd vite-project && npm run preview"
+  },
+  "workspaces": [
+    "vite-project"
+  ]
+}
