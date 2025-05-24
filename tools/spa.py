@@ -177,7 +177,7 @@ async def get_bookings(email: Optional[str] = Query(None, description="Filter by
         raise HTTPException(status_code=500, detail=f"Failed to retrieve bookings: {str(e)}")
 
 @router.delete("/book/{booking_id}")
-async def cancel_booking(booking_id: int):
+async def cancel_booking(booking_id: str):
     try:
         # Update status to cancelled instead of deleting
         response = supabase.table("appointments") \
