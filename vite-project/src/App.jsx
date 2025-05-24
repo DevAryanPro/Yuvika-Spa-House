@@ -5,6 +5,7 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Booking Schedule Data
   const schedule = {
     monday: [
       { time: "10:00 AM", available: true },
@@ -43,6 +44,7 @@ export default function App() {
     ],
   };
 
+  // Sponsors Slider Logic
   const sponsors = [
     "SpaCare",
     "Zen Wellness",
@@ -54,11 +56,20 @@ export default function App() {
     "Luxury Retreats"
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sponsors.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [sponsors.length]);
+
+  // How It Works Section
   const howItWorks = [
     {
       step: "1",
       title: "Choose Your Service",
-      description: "Select from a variety of treatments tailored to your wellness needs.",
+      description:
+        "Select from a variety of treatments tailored to your wellness needs.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +82,7 @@ export default function App() {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6z"></path>
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <path d="M16 10a4 4 0 1 1-8 0"></path>
         </svg>
@@ -80,7 +91,8 @@ export default function App() {
     {
       step: "2",
       title: "Pick a Time Slot",
-      description: "View real-time availability and select the most convenient time for your session.",
+      description:
+        "View real-time availability and select the most convenient time for your session.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +115,8 @@ export default function App() {
     {
       step: "3",
       title: "Get Confirmation",
-      description: "Receive instant confirmation via email or push notification.",
+      description:
+        "Receive instant confirmation via email or push notification.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -122,6 +135,7 @@ export default function App() {
     },
   ];
 
+  // Testimonials
   const testimonials = [
     {
       name: "Emily Johnson",
@@ -143,6 +157,7 @@ export default function App() {
     },
   ];
 
+  // Pricing Plans
   const pricingPlans = [
     {
       name: "Basic Package",
@@ -152,28 +167,30 @@ export default function App() {
     {
       name: "Premium Package",
       price: "$150/month",
-      features: ["3 sessions per month", "Push Notifications", "VIP Treatments", "Priority Booking"],
+      features: [
+        "3 sessions per month",
+        "Push Notifications",
+        "VIP Treatments",
+        "Priority Booking",
+      ],
       popular: true,
     },
     {
       name: "Deluxe Package",
       price: "$250/month",
-      features: ["Unlimited sessions", "Personalized Services", "Access to all amenities", "24/7 Support"],
+      features: [
+        "Unlimited sessions",
+        "Personalized Services",
+        "Access to all amenities",
+        "24/7 Support",
+      ],
     },
   ];
-
-  // Auto slider logic
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sponsors.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [sponsors.length]);
 
   return (
     <div className="bg-gray-50 text-gray-900 min-h-screen font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 border-solid border-1 shadow-sm">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <svg
@@ -196,28 +213,43 @@ export default function App() {
             <span className="font-semibold text-lg">Yuvika Spa House</span>
           </div>
 
+          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#hero" className="text-gray-700 hover:text-purple-600 transition-colors">
               Home
             </a>
-            <a href="#how-it-works" className="text-gray-700 hover:text-purple-600 transition-colors">
+            <a
+              href="#how-it-works"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
               How It Works
             </a>
-            <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">
+            <a
+              href="#testimonials"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
               Testimonials
             </a>
-            <a href="#pricing" className="text-gray-700 hover:text-purple-600 transition-colors">
+            <a
+              href="#pricing"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
               Pricing
             </a>
-            <a href="#booking" className="text-gray-700 hover:text-purple-600 transition-colors">
+            <a
+              href="#booking"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
               Booking
             </a>
           </nav>
 
-          <button className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors">
+          {/* Desktop Book Button */}
+          <button className="hidden md:block px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors whitespace-nowrap">
             Book Appointment
           </button>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden focus:outline-none"
@@ -246,21 +278,47 @@ export default function App() {
         {menuOpen && (
           <div className="md:hidden bg-white p-4 border-t border-gray-200">
             <nav className="flex flex-col space-y-3">
-              <a href="#hero" className="text-gray-700 hover:text-purple-600">
+              <a
+                href="#hero"
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-700 hover:text-purple-600 py-2"
+              >
                 Home
               </a>
-              <a href="#how-it-works" className="text-gray-700 hover:text-purple-600">
+              <a
+                href="#how-it-works"
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-700 hover:text-purple-600 py-2"
+              >
                 How It Works
               </a>
-              <a href="#testimonials" className="text-gray-700 hover:text-purple-600">
+              <a
+                href="#testimonials"
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-700 hover:text-purple-600 py-2"
+              >
                 Testimonials
               </a>
-              <a href="#pricing" className="text-gray-700 hover:text-purple-600">
+              <a
+                href="#pricing"
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-700 hover:text-purple-600 py-2"
+              >
                 Pricing
               </a>
-              <a href="#booking" className="text-gray-700 hover:text-purple-600">
+              <a
+                href="#booking"
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-700 hover:text-purple-600 py-2"
+              >
                 Booking
               </a>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="mt-4 px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+              >
+                Book Appointment
+              </button>
             </nav>
           </div>
         )}
@@ -269,7 +327,7 @@ export default function App() {
       {/* Hero Section with Grid Background */}
       <section
         id="hero"
-        className="pt-32 pb-40 relative overflow-hidden min-h-screen flex items-center justify-center"
+        className="pt-28 pb-32 relative overflow-hidden min-h-[80vh] flex items-center justify-center"
       >
         {/* Background Grid */}
         <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-10 pointer-events-none">
@@ -279,8 +337,8 @@ export default function App() {
         </div>
 
         {/* Floating Shapes for Depth */}
-        <div className="absolute top-20 left-10 w-40 h-40 bg-purple-100 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-60 h-60 bg-blue-100 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-100 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-blue-100 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
         {/* Centered Content */}
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
@@ -295,7 +353,7 @@ export default function App() {
             </span>
           </h1>
 
-          <p className="text-lg text-gray-600 mt-6">
+          <p className="text-lg text-gray-600 mt-6 max-w-xl mx-auto">
             Experience the future of spa booking with our intelligent system.
             Choose your treatment, pick a time, and receive instant confirmation
             with personalized notifications.
@@ -490,7 +548,7 @@ export default function App() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 flex items-center justify-center">
             <svg
-              xmlns="http://www.w3.org/2000.svg"
+              xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -510,12 +568,12 @@ export default function App() {
           </h2>
 
           <div className="max-w-3xl mx-auto">
-            <div className="flex justify-center space-x-2 mb-6">
+            <div className="flex justify-center flex-wrap gap-2 mb-6">
               {Object.keys(schedule).map((day) => (
                 <button
                   key={day}
                   onClick={() => setActiveTab(day)}
-                  className={`capitalize px-4 py-2 rounded-md ${
+                  className={`capitalize px-4 py-2 rounded-md transition-colors ${
                     activeTab === day
                       ? "bg-purple-600 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -578,7 +636,10 @@ export default function App() {
                 The ultimate spa booking experience powered by AI and voice technology.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-500 hover:text-purple-600">
+                <a
+                  href="#"
+                  className="text-gray-500 hover:text-purple-600 transition-colors"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -590,10 +651,13 @@ export default function App() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                   </svg>
                 </a>
-                <a href="#" className="text-gray-500 hover:text-purple-600">
+                <a
+                  href="#"
+                  className="text-gray-500 hover:text-purple-600 transition-colors"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -605,10 +669,13 @@ export default function App() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
                   </svg>
                 </a>
-                <a href="#" className="text-gray-500 hover:text-purple-600">
+                <a
+                  href="#"
+                  className="text-gray-500 hover:text-purple-600 transition-colors"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -692,12 +759,8 @@ export default function App() {
       {/* Global Styles */}
       <style jsx>{`
         @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         .animate-scroll {
           animation: scroll linear infinite;
