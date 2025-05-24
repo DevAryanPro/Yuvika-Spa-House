@@ -1,7 +1,7 @@
-import { FiCheck } from 'react-icons/fi';
+import React from 'react';
 
-export default function Pricing() {
-  const plans = [
+function Pricing() {
+  const pricingPlans = [
     {
       name: "Basic Package",
       price: "$75/month",
@@ -10,14 +10,24 @@ export default function Pricing() {
     {
       name: "Premium Package",
       price: "$150/month",
-      features: ["3 sessions per month", "Push Notifications", "VIP Treatments", "Priority Booking"],
+      features: [
+        "3 sessions per month",
+        "Push Notifications",
+        "VIP Treatments",
+        "Priority Booking",
+      ],
       popular: true,
     },
     {
       name: "Deluxe Package",
       price: "$250/month",
-      features: ["Unlimited sessions", "Personalized Services", "Access to all amenities", "24/7 Support"],
-    }
+      features: [
+        "Unlimited sessions",
+        "Personalized Services",
+        "Access to all amenities",
+        "24/7 Support",
+      ],
+    },
   ];
 
   return (
@@ -25,7 +35,7 @@ export default function Pricing() {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Our Pricing Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, idx) => (
+          {pricingPlans.map((plan, idx) => (
             <div
               key={idx}
               className={`bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all ${
@@ -42,7 +52,7 @@ export default function Pricing() {
               <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-center space-x-2 text-gray-600">
-                    <FiCheck className="text-green-500" />
+                    <span>✓</span>
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -57,3 +67,5 @@ export default function Pricing() {
     </section>
   );
 }
+
+export default Pricing;

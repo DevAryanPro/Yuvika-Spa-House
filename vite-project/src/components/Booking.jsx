@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-export default function Booking() {
+function Booking() {
   const [activeTab, setActiveTab] = useState("monday");
 
   const schedule = {
@@ -87,3 +87,5 @@ export default function Booking() {
     </section>
   );
 }
+
+export default Booking;
