@@ -10,5 +10,8 @@
   },
   "workspaces": [
     "vite-project"
-  ]
+  ],
+  "dependencies": {
+    "git": "^0.1.5"
+  }
 }
