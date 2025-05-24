@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from tools.tts import router as tts_router
 from tools.stt import router as stt_router
-from spa_booking import router as spa_router
+from tools.spa import router as spa_router
 
 app = FastAPI()
 
