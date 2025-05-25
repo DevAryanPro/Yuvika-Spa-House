@@ -77,6 +77,7 @@ Run in development
 ```bash
 npm run dev
 Open http://localhost:3000 in your browser.
+
 3. **Build & Deploy**
 
 ```bash
