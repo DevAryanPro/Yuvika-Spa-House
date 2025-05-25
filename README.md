@@ -83,9 +83,33 @@ Open http://localhost:3000 in your browser.
 npm run build
 npm run start
 
+---
+
 ## 🔑 Environment Variables
 Create a .env.local file in project root:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+---
+
+## 📂 Project Structure
+├── public/
+│   └── favicon.ico
+├── src/
+│   ├── components/
+│   │   └── UI (Navbar, Footer, DarkModeToggle, etc.)
+│   ├── pages/
+│   │   ├── index.tsx      # Landing page
+│   │   ├── auth/          # Sign in / Sign up
+│   │   ├── dashboard/     # Admin dashboard root
+│   │   └── api/           # Next.js API routes
+│   ├── lib/
+│   │   ├── supabase.ts    # Supabase client
+│   │   ├── openai.ts      # AI client
+│   └── styles/            # Tailwind config, globals.css
+├── .env.local
+├── next.config.js
+├── tailwind.config.js
+└── package.json
