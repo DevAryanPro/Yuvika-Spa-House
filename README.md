@@ -82,3 +82,10 @@ Open http://localhost:3000 in your browser.
 ```bash
 npm run build
 npm run start
+
+## 🔑 Environment Variables
+Create a .env.local file in project root:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
