@@ -70,13 +70,13 @@ Welcome to **Yuvika Spa Massage**, the next-gen AI-powered booking and managemen
    cd yuvika-spa
 2. **Install dependencies**
    
-```bash npm install
+```bash
+npm install
 Run in development
 
 ```bash
 npm run dev
 Open http://localhost:3000 in your browser.
-
 3. **Build & Deploy**
 
 ```bash
