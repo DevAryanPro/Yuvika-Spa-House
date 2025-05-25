@@ -12,6 +12,6 @@
     "vite-project"
   ],
   "dependencies": {
-    "git": "^0.1.5"
+    "@supabase/supabase-js": "^2.49.8"
   }
 }

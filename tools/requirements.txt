@@ -1,5 +1,8 @@
 fastapi
 uvicorn[standard]
+pydantic[email]
 speechrecognition
 python-multipart
 edge-tts
+supabase
+pydantic
