@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 from fastapi import APIRouter, Query, HTTPException, Body
 from fastapi.responses import JSONResponse
@@ -18,33 +18,7 @@ except Exception as e:
     raise RuntimeError(f"Failed to initialize Supabase client: {e}")
 
 ALL_SLOTS = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00"]
-VALID_SERVICES = ["massage", "facial", "manicure", "pedicure", "spa_package"]
-
-def can_order_for_date(target_date_str, target_time_str=None):
-    current_date = datetime.now()
-    target_date = datetime.strptime(target_date_str, "%Y-%m-%d")
-    
-    if target_date.date() < current_date.date():
-        return False
-    
-    if target_date.date() == current_date.date() and target_time_str:
-        target_datetime = datetime.strptime(f"{target_date_str} {target_time_str}", "%Y-%m-%d %H:%M")
-        if target_datetime <= current_date:
-            return False
-    
-    current_weekday = current_date.weekday()  # Monday=0, Sunday=6
-    current_week_start = current_date - timedelta(days=current_weekday)
-    current_week_end = current_week_start + timedelta(days=6)
-    
-    next_week_start = current_week_start + timedelta(days=7)
-    next_week_end = current_week_end + timedelta(days=7)
-    
-    if current_weekday in [0, 1, 2, 3, 4]:
-        return (current_week_start.date() <= target_date.date() <= current_week_end.date()) or \
-               (next_week_start.date() <= target_date.date() <= next_week_end.date())
-    
-    else:
-       return next_week_start.date() <= target_date.date() <= next_week_end.date()
+VALID_SERVICES = ["massage", "facial", "manicure", "pedicure", "spa_package"]  # Add your services
 
 class BookingRequest(BaseModel):
     name: str
@@ -68,11 +42,15 @@ class BookingRequest(BaseModel):
     @validator('date')
     def validate_date(cls, v):
         try:
-            datetime.strptime(v, "%Y-%m-%d")
+            date_obj = datetime.strptime(v, "%Y-%m-%d")
+            if date_obj.date() < datetime.now().date():
+                raise ValueError('Date cannot be in the past')
             return v
-        except ValueError:
-            raise ValueError('Date must be in YYYY-MM-DD format')
-
+        except ValueError as e:
+            if "time data" in str(e):
+                raise ValueError('Date must be in YYYY-MM-DD format')
+            raise e
+    
     @validator('time')
     def validate_time(cls, v):
         if v not in ALL_SLOTS:
@@ -84,7 +62,7 @@ async def root():
     return {
         "message": "Welcome to the Spa Booking API",
         "endpoints": {
-            "available": "GET /available?date=YYYY-MM-DD&time=HH:MM",
+            "available": "GET /available?service=SERVICE&date=YYYY-MM-DD",
             "book": "POST /book",
             "bookings": "GET /bookings?email=EMAIL (optional)"
         },
@@ -94,65 +72,49 @@ async def root():
     }
 
 @router.get("/available")
-async def check_availability(
-    date: str = Query(..., description="Date in YYYY-MM-DD format"),
-    time: str = Query(..., description="Time in HH:MM format")
+async def get_available_slots(
+    service: str = Query(..., description="Service type"),
+    date: str = Query(..., description="Date in YYYY-MM-DD format")
 ):
-    # Validate date format
+    # Validate inputs
+    if service not in VALID_SERVICES:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid service. Must be one of: {', '.join(VALID_SERVICES)}"
+        )
+    
     try:
-        datetime.strptime(date, "%Y-%m-%d")
+        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        if date_obj.date() < datetime.now().date():
+            raise HTTPException(status_code=400, detail="Date cannot be in the past")
     except ValueError:
         raise HTTPException(status_code=400, detail="Date must be in YYYY-MM-DD format")
     
-    # Validate time format and check if it's in allowed slots
-    if time not in ALL_SLOTS:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Invalid time. Must be one of: {', '.join(ALL_SLOTS)}"
-        )
-    
-    # Check ordering restrictions with time validation
-    if not can_order_for_date(date, time):
-        return JSONResponse(content={"available": False})
-    
     try:
-        # Check if the specific date and time slot is already booked
         response = supabase.table("appointments") \
-            .select("id") \
+            .select("time") \
+            .eq("service", service) \
             .eq("date", date) \
-            .eq("time", time) \
             .eq("status", "booked") \
             .execute()
         
-        is_available = len(response.data) == 0
+        booked_times = [item["time"] for item in response.data]
+        available_slots = [slot for slot in ALL_SLOTS if slot not in booked_times]
         
-        return JSONResponse(content={"available": is_available})
+        return JSONResponse(content={
+            "service": service,
+            "date": date,
+            "available_slots": available_slots,
+            "booked_slots": booked_times
+        })
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-
 @router.post("/book")
 async def create_booking(booking: BookingRequest = Body(...)):
     try:
-        # First, validate ordering restrictions with time
-        if not can_order_for_date(booking.date, booking.time):
-            current_weekday = datetime.now().weekday()
-            target_date = datetime.strptime(booking.date, "%Y-%m-%d").date()
-            current_date = datetime.now().date()
-            
-            if current_weekday in [5, 6]:  # Weekend
-                raise HTTPException(status_code=400, detail="Weekend users can only book for next week")
-            else:
-                # Check if it's a time validation issue (same day, past time)
-                if target_date == current_date:
-                    target_datetime = datetime.strptime(f"{booking.date} {booking.time}", "%Y-%m-%d %H:%M")
-                    if target_datetime <= datetime.now():
-                        raise HTTPException(status_code=400, detail="Cannot book for past time")
-                
-                raise HTTPException(status_code=400, detail="Date is outside allowed ordering window")
-        
-        # Rest of the method remains the same...
+        # Check if slot is already booked
         existing = supabase.table("appointments") \
             .select("*") \
             .eq("service", booking.service) \
@@ -196,11 +158,10 @@ async def create_booking(booking: BookingRequest = Body(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Booking failed: {str(e)}")
 
-
 @router.get("/bookings")
 async def get_bookings(email: Optional[str] = Query(None, description="Filter by email")):
     try:
-        query = supabase.table("appointments").select("date, time, status").eq("status", "booked")
+        query = supabase.table("appointments").select("*").eq("status", "booked")
         
         if email:
             query = query.eq("email", email)
@@ -214,3 +175,26 @@ async def get_bookings(email: Optional[str] = Query(None, description="Filter by
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve bookings: {str(e)}")
+
+@router.delete("/book/{booking_id}")
+async def cancel_booking(booking_id: str):
+    try:
+        # Update status to cancelled instead of deleting
+        response = supabase.table("appointments") \
+            .update({"status": "cancelled"}) \
+            .eq("id", booking_id) \
+            .eq("status", "booked") \
+            .execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Booking not found or already cancelled")
+        
+        return JSONResponse(content={
+            "success": True,
+            "message": "Booking cancelled successfully"
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Cancellation failed: {str(e)}")
