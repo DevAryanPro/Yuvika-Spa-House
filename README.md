@@ -46,7 +46,7 @@ Yuvika Spa House is a web application designed to provide a seamless and interac
 
 1. **Clone the repository (if applicable):**
    ```bash
-   git clone [[your-repository-url]](https://github.com/DevAryanPro/Yuvika-Spa-House/)
+   git clone https://github.com/DevAryanPro/Yuvika-Spa-House
    cd Yuvika-Spa-House
 
 2. Navigate to the frontend project directory:
@@ -64,9 +64,9 @@ Yuvika Spa House is a web application designed to provide a seamless and interac
 
 ## Set up environment variables: 
  Create a .env file in the vite-project directory and add your Supabase credentials:
- EMAIL_USER=techveltrix@gmail.com
- EMAIL_PASS=zrua wncy fcez yhcy
- OWNER_EMAIL=techveltrix@gmail.com
+ EMAIL_USER=user@gmail.com
+ EMAIL_PASS=xyzpass
+ OWNER_EMAIL=owner@gmail.com
  VITE_SUPABASE_URL=
  VITE_SUPABASE_ANON_KEY=ey
 
