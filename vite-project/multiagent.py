@@ -5,9 +5,11 @@ from dateutil.parser import parse as date_parse
 import google.generativeai as genai
 import requests
 
+# Configure Gemini API key
 GOOGLE_API_KEY = "AIzaSyBjd2_-0uvUOMEylfMMTAI12JVl-RNKDuo"
 genai.configure(api_key=GOOGLE_API_KEY)
 
+# System instruction for the assistant
 MODEL_CONFIG = {
     "system_instruction": (
         "You are Rhea, Yuvika Spa's AI assistant. Key rules:\n"
@@ -18,6 +20,7 @@ MODEL_CONFIG = {
     )
 }
 
+# Create model instance with tools
 model = genai.GenerativeModel(
     model_name="gemini-2.0-flash",
     tools=[{
@@ -46,7 +49,7 @@ model = genai.GenerativeModel(
                         "date": {"type": "string"},
                         "time": {"type": "string"}
                     },
-                    "required": ["name", "service", "date", "time","email"]
+                    "required": ["name", "service", "date", "time", "email"]
                 }
             }
         ]
@@ -54,22 +57,27 @@ model = genai.GenerativeModel(
     system_instruction=MODEL_CONFIG["system_instruction"]
 )
 
+# Date validator
 def validate_date(date_str):
     try:
-        dt = parse(date_str)
-        if dt.weekday() >= 5: return None, "Weekends not available"
-        if dt.date() < datetime.now().date(): return None, "Past date invalid"
+        dt = date_parse(date_str)
+        if dt.weekday() >= 5:
+            return None, "We are closed on weekends."
+        if dt.date() < datetime.now().date():
+            return None, "Date cannot be in the past."
         return dt.strftime("%Y-%m-%d"), None
     except Exception as e:
         return None, f"Invalid date: {str(e)}"
 
+# API call handler
 def handle_api_call(args):
     try:
         if "date" in args:
             valid_date, error = validate_date(args["date"])
-            if error: return {"error": error}
+            if error:
+                return {"error": error}
             args["date"] = valid_date
-            
+
         if args.get("endpoint") == "available":
             response = requests.get(
                 "https://yuvika-spa-house.onrender.com/spa/available",
@@ -82,35 +90,59 @@ def handle_api_call(args):
                 json=args,
                 timeout=10
             )
+        else:
+            return {"error": "Unknown endpoint."}
+
         return response.json()
     except Exception as e:
         return {"error": str(e)}
 
-def process_message(message):
+# Process each message using a shared convo session
+def process_message(convo, message):
     try:
-        convo = model.start_chat()
         response = convo.send_message(message)
-        
-        if function_call := response.candidates[0].content.parts[0].function_call:
-            result = handle_api_call(dict(function_call.args))
-            convo.send_message(json.dumps(result))
-            print(convo.last.text)
-            return convo.last.text
+
+        if response.candidates and response.candidates[0].content.parts:
+            part = response.candidates[0].content.parts[0]
+            if hasattr(part, "function_call") and part.function_call:
+                func_call = part.function_call
+                func_name = func_call.name
+                args = dict(func_call.args or {})
+
+                # Add endpoint mapping
+                if func_name == "check_available_slots":
+                    args["endpoint"] = "available"
+                elif func_name == "book_appointment":
+                    args["endpoint"] = "book"
+                else:
+                    return f"Unknown function: {func_name}"
+
+                # Call backend API
+                result = handle_api_call(args)
+
+                # Feed result back into chat
+                convo.send_message(json.dumps(result))
+                return convo.last.text
+
         return response.text
-        
+
     except Exception as e:
         return f"Error: {str(e)}"
 
+# Main stdin loop
 if __name__ == "__main__":
+    convo = model.start_chat()
+
     for line in sys.stdin:
         try:
             message = line.strip()
-            if not message: continue
-            
-            response = process_message(message)
+            if not message:
+                continue
+
+            response = process_message(convo, message)
             print(json.dumps({"response": response}))
             sys.stdout.flush()
-            
+
         except Exception as e:
             print(json.dumps({"error": str(e)}))
             sys.stdout.flush()
