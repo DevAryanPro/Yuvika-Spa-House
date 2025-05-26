@@ -46,11 +46,11 @@ Welcome to **Yuvika Spa Massage**, the next-gen AI-powered booking and managemen
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React, TailwindCSS, Lucide Icons, Inter font  
+- **Frontend**: React, TailwindCSS, Lucide Icons, Google Sans  
 - **Backend**: Node.js, Express  
-- **Database**: Supabase (PostgreSQL + Auth)  
-- **AI Agents**: OpenAI API (text & speech models)  
-- **Deployment**: Vercel / Netlify / Your choice  
+- **Database**: Supabase
+- **AI Agents**: Gemini (text models)  
+
 
 ---
 
