@@ -19,6 +19,7 @@ const Testimonials = React.lazy(() => import("./components/Testimonials"));
 const Pricing = React.lazy(() => import("./components/Pricing"));
 const Booking = React.lazy(() => import("./components/Booking"));
 const Footer = React.lazy(() => import("./components/Footer"));
+const AdminBroadcast = React.lazy(() => import("./pages/AdminBroadcast")); // <-- Add this line
 
 const AuthWrapper = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -70,6 +71,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/admin-broadcast" element={<AdminBroadcast />} /> {/* <-- Add this line */} 
 
           <Route
             path="/"
